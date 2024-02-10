@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic HTML Table Using Javascript</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Dynamic User Table</h1>
+
+        <!-- input-group -->
+        <div class="input-group">
+            <input type="text" class="form-input" placeholder="Enter user name" id="usernameInput">
+        </div><!-- /.input-group -->
+
+        <!-- input-group -->
+        <div class="input-group">
+            <input type="text" class="form-input" placeholder="Address" id="addressInput">
+        </div><!-- /.input-group -->
+
+        <!-- input-group -->
+        <div class="input-group">
+            <input type="number" class="form-input" placeholder="User age" id="ageInput">
+        </div><!-- /.input-group -->
+
+        <!-- input-group -->
+        <div class="input-group">
+            <input type="number" class="form-input" placeholder="Enter mobile number" id="mobInput">
+        </div><!-- /.input-group -->
+
+        <button class="form-button" type="button" id="addUser">Add User</button>
+    </div>
+
+    <div class="container" id="table-wrapper">
+        <div class="search-box">
+            <input type="text" class="form-input" placeholder="Enter search string" id="searchInput">
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        // Create empty table
+        const table = document.createElement("table");
+        document.getElementById("table-wrapper").appendChild(table);
+
+        //Add class to table
+        table.classList.add("dynamicTable");
+
+        // Create the thead element
+        const thead = document.createElement('thead');
+        table.appendChild(thead);
+
+        let headerRow = document.createElement('tr');
+        let headers = ['Username', 'Address', 'Age', 'Mobile', 'Options'];
+
+        headers.forEach(headerText => {
+            let headerCell = document.createElement('th');
+            headerCell.textContent = headerText;
+            headerRow.appendChild(headerCell);
+        });
+
+        // Append the headerRow to the thead
+        thead.appendChild(headerRow);
+
+        // Create the tbody element
+        const tbody = document.createElement('tbody');
+        table.appendChild(tbody);
+
+        let data = [
+            { username: "john", address: "123 Main St", age: 30, mobile: "1234567890" },
+            { username: "jane", address: "456 Park Ave", age: 25, mobile: "0987654321" },
+        ];
+
+        data.forEach(user => {
+
+            let row = document.createElement('tr');
+
+            let usernameCell = document.createElement('td');
+            usernameCell.textContent = user.username;
+            usernameCell.contentEditable = true;
+
+            let addressCell = document.createElement('td');
+            addressCell.textContent = user.address;
+            addressCell.contentEditable = true;
+
+            let ageCell = document.createElement('td');
+            ageCell.textContent = user.age;
+            ageCell.contentEditable = true;
+
+            let mobileCell = document.createElement('td');
+            mobileCell.textContent = user.mobile;
+            mobileCell.contentEditable = true;
+
+            let optionCell = document.createElement('td');
+            optionCell.innerHTML = '<a href="#" class="form-button btn-sm delUser">Delete</a>';
+
+            row.appendChild(usernameCell);
+            row.appendChild(addressCell);
+            row.appendChild(ageCell);
+            row.appendChild(mobileCell);
+            row.appendChild(optionCell);
+
+            tbody.appendChild(row);
+
+        });
+
+        //add user when button click
+        let button = document.getElementById("addUser");
+        button.addEventListener("click", () => {
+
+            const userName = document.getElementById("usernameInput");
+            const userAge = document.getElementById("ageInput");
+            const userAddress = document.getElementById("addressInput");
+            const userMobile = document.getElementById("mobInput");
+
+            const isEmpty = [userName, userAge, userAddress, userMobile].some(field => field.value.trim() === "");
+            if (isEmpty) {
+                alert("Fields can't be empty");
+                return;
+            }
+
+
+            let row = tbody.insertRow();
+
+            let nameCell = row.insertCell(0);
+            nameCell.innerHTML = userName.value;
+            nameCell.contentEditable = true;
+
+            let ageCell = row.insertCell(1);
+            ageCell.innerHTML = userAge.value;
+            ageCell.contentEditable = true;
+
+            let addressCell = row.insertCell(2);
+            addressCell.innerHTML = userAddress.value;
+            addressCell.contentEditable = true;
+
+            let mobCell = row.insertCell(3);
+            mobCell.innerHTML = userMobile.value;
+            mobCell.contentEditable = true;
+
+
+            let optionCell = row.insertCell(4);
+            optionCell.innerHTML = '<a href="#" class="form-button btn-sm delUser">Delete</a>';
+            optionCell.contentEditable = true;
+
+        });
+
+
+        // event listener for delete button
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('delUser')) {
+                let row = e.target.closest('tr');
+                let tbody = row.parentNode;
+                tbody.removeChild(row);
+            }
+        });
+
+
+        let searchInput = document.getElementById('searchInput');
+
+        searchInput.onkeyup = () => {
+
+            // get search term 
+            let term = searchInput.value.toUpperCase();
+
+            // filter rows
+            let rows = tbody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                if (row.textContent.toUpperCase().includes(term)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            })
+
+        }
+    </script>
+</body>
+
+</html>
